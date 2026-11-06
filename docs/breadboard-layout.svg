@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="520" viewBox="0 0 680 520" role="img"><title>Mini breadboard layout for the salt sensor</title><desc>17-row mini breadboard with the ESP32-C3 in rows 1 to 8, sensor pins in A13 to A16, 1k resistor E15 to F15, 2.2k resistor H15 to I16, and jumper wires for 5V, trigger, echo and ground.</desc><style>text{font-family:Helvetica,Arial,sans-serif;fill:#2C2C2A}.ts{font-size:12px}.th{font-size:14px;font-weight:bold}</style><rect width="680" height="520" fill="#fff"/>
+<defs><pattern id="holes" x="138" y="63" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="3" fill="none" stroke="#888780" stroke-width="0.5"/></pattern></defs>
+<rect x="130" y="40" width="280" height="439" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+<rect x="288" y="400" width="120" height="22" rx="4" fill="#EF9F27" opacity="0.25"/><rect x="138" y="424" width="120" height="22" rx="4" fill="#888780" opacity="0.2"/><rect x="288" y="424" width="120" height="22" rx="4" fill="#888780" opacity="0.2"/>
+<rect x="138" y="63" width="120" height="408" fill="url(#holes)"/><rect x="288" y="63" width="120" height="408" fill="url(#holes)"/>
+<text class="ts" x="150" y="58" text-anchor="middle">A</text>
+<text class="ts" x="174" y="58" text-anchor="middle">B</text>
+<text class="ts" x="198" y="58" text-anchor="middle">C</text>
+<text class="ts" x="222" y="58" text-anchor="middle">D</text>
+<text class="ts" x="246" y="58" text-anchor="middle">E</text>
+<text class="ts" x="300" y="58" text-anchor="middle">F</text>
+<text class="ts" x="324" y="58" text-anchor="middle">G</text>
+<text class="ts" x="348" y="58" text-anchor="middle">H</text>
+<text class="ts" x="372" y="58" text-anchor="middle">I</text>
+<text class="ts" x="396" y="58" text-anchor="middle">J</text>
+<text class="ts" x="122" y="75" text-anchor="end" dominant-baseline="central">1</text>
+<text class="ts" x="122" y="99" text-anchor="end" dominant-baseline="central">2</text>
+<text class="ts" x="122" y="123" text-anchor="end" dominant-baseline="central">3</text>
+<text class="ts" x="122" y="147" text-anchor="end" dominant-baseline="central">4</text>
+<text class="ts" x="122" y="171" text-anchor="end" dominant-baseline="central">5</text>
+<text class="ts" x="122" y="195" text-anchor="end" dominant-baseline="central">6</text>
+<text class="ts" x="122" y="219" text-anchor="end" dominant-baseline="central">7</text>
+<text class="ts" x="122" y="243" text-anchor="end" dominant-baseline="central">8</text>
+<text class="ts" x="122" y="267" text-anchor="end" dominant-baseline="central">9</text>
+<text class="ts" x="122" y="291" text-anchor="end" dominant-baseline="central">10</text>
+<text class="ts" x="122" y="315" text-anchor="end" dominant-baseline="central">11</text>
+<text class="ts" x="122" y="339" text-anchor="end" dominant-baseline="central">12</text>
+<text class="ts" x="122" y="363" text-anchor="end" dominant-baseline="central">13</text>
+<text class="ts" x="122" y="387" text-anchor="end" dominant-baseline="central">14</text>
+<text class="ts" x="122" y="411" text-anchor="end" dominant-baseline="central">15</text>
+<text class="ts" x="122" y="435" text-anchor="end" dominant-baseline="central">16</text>
+<text class="ts" x="122" y="459" text-anchor="end" dominant-baseline="central">17</text>
+<rect x="140" y="63" width="170" height="192" rx="6" fill="#7F77DD" opacity="0.25" stroke="#534AB7"/><text class="th" x="204" y="159" text-anchor="middle">ESP32-C3</text>
+<circle cx="300" cy="75" r="4" fill="#534AB7"/><text class="ts" x="291" y="75" text-anchor="end" dominant-baseline="central">5V</text>
+<circle cx="300" cy="99" r="4" fill="#534AB7"/><text class="ts" x="291" y="99" text-anchor="end" dominant-baseline="central">GND</text>
+<circle cx="300" cy="219" r="4" fill="#534AB7"/><text class="ts" x="291" y="219" text-anchor="end" dominant-baseline="central">GPIO1</text>
+<circle cx="300" cy="243" r="4" fill="#534AB7"/><text class="ts" x="291" y="243" text-anchor="end" dominant-baseline="central">GPIO0</text>
+<circle cx="150" cy="363" r="4" fill="#E24B4A"/><text class="ts" x="96" y="363" text-anchor="end" dominant-baseline="central">VCC</text>
+<circle cx="150" cy="387" r="4" fill="#1D9E75"/><text class="ts" x="96" y="387" text-anchor="end" dominant-baseline="central">Trig</text>
+<circle cx="150" cy="411" r="4" fill="#BA7517"/><text class="ts" x="96" y="411" text-anchor="end" dominant-baseline="central">Echo</text>
+<circle cx="150" cy="435" r="4" fill="#5F5E5A"/><text class="ts" x="96" y="435" text-anchor="end" dominant-baseline="central">GND</text>
+<path d="M174,363 V339 H360 V75 H348" fill="none" stroke="#E24B4A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="174" cy="363" r="4" fill="#E24B4A"/><circle cx="348" cy="75" r="4" fill="#E24B4A"/>
+<path d="M198,387 V315 H312 V243 H324" fill="none" stroke="#1D9E75" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="198" cy="387" r="4" fill="#1D9E75"/><circle cx="324" cy="243" r="4" fill="#1D9E75"/>
+<path d="M324,411 H336 V219 H348" fill="none" stroke="#BA7517" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="324" cy="411" r="4" fill="#BA7517"/><circle cx="348" cy="219" r="4" fill="#BA7517"/>
+<path d="M246,435 H300" fill="none" stroke="#5F5E5A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="246" cy="435" r="4" fill="#5F5E5A"/><circle cx="300" cy="435" r="4" fill="#5F5E5A"/>
+<path d="M396,99 H430 V435 H396" fill="none" stroke="#5F5E5A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="396" cy="99" r="4" fill="#5F5E5A"/><circle cx="396" cy="435" r="4" fill="#5F5E5A"/>
+<rect x="250" y="403" width="46" height="16" rx="3" fill="#FAC775" stroke="#854F0B" stroke-width="0.5"/><text class="ts" x="273" y="411" text-anchor="middle" dominant-baseline="central" style="fill:#412402">1 kΩ</text><circle cx="246" cy="411" r="3" fill="#854F0B"/><circle cx="300" cy="411" r="3" fill="#854F0B"/><text class="th" x="273" y="389" text-anchor="middle" dominant-baseline="central">R1</text>
+<path d="M348,411 V435 H372" fill="none" stroke="#854F0B" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/><path d="M348,411 V435 H372" fill="none" stroke="#FAC775" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/><text class="th" x="442" y="437" dominant-baseline="central">R2 2.2 kΩ</text>
+<line x1="470" y1="110" x2="500" y2="110" stroke="#E24B4A" stroke-width="3" stroke-linecap="round"/><text class="ts" x="510" y="110" dominant-baseline="central">5V power</text>
+<line x1="470" y1="136" x2="500" y2="136" stroke="#1D9E75" stroke-width="3" stroke-linecap="round"/><text class="ts" x="510" y="136" dominant-baseline="central">Trigger</text>
+<line x1="470" y1="162" x2="500" y2="162" stroke="#BA7517" stroke-width="3" stroke-linecap="round"/><text class="ts" x="510" y="162" dominant-baseline="central">Echo</text>
+<line x1="470" y1="188" x2="500" y2="188" stroke="#5F5E5A" stroke-width="3" stroke-linecap="round"/><text class="ts" x="510" y="188" dominant-baseline="central">Ground</text>
+<text class="ts" x="470" y="230">Shaded row 15 = junction</text><text class="ts" x="470" y="250">Shaded row 16 = ground</text></svg>

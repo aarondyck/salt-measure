@@ -15,6 +15,18 @@ days remaining, low-salt alerts and a usage dashboard with period-over-period co
 | `homeassistant/salt_level_alerts.yaml` | Automation: warning below 50%, critical below 25% |
 | `homeassistant/dashboard/water-softener.json` | Lovelace dashboard (raw config) |
 
+## Wiring
+
+The sensor's Echo pin outputs 5 V, but the ESP32's GPIO pins only tolerate 3.3 V. A voltage
+divider (1 kΩ from Echo to a junction, 2.2 kΩ from the junction to ground, GPIO1 on the
+junction) brings it down to about 3.4 V. Trig connects directly to GPIO0.
+
+![Wiring schematic](docs/wiring-schematic.svg)
+
+Layout on a 17-row mini breadboard:
+
+![Breadboard layout](docs/breadboard-layout.svg)
+
 ## Setup
 
 1. **Firmware.** Add `salt_level_sensor__encryption_key`, `wifi_ssid` and `wifi_password`
