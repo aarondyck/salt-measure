@@ -1,0 +1,19 @@
+# Helpers used by the dashboard and the alert automation.
+# Either paste into configuration.yaml (input_select:) or create them in
+# Settings > Devices & services > Helpers > Create helper > Dropdown with the same
+# entity IDs and options.
+input_select:
+  salt_alert_level:
+    name: Salt Alert Level
+    icon: mdi:shaker-outline
+    options: [ok, low, critical]
+  salt_compare_period:
+    name: Salt compare period
+    icon: mdi:calendar-range
+    initial: Week
+    options: [Week, Month, Year]
+  salt_compare_against:
+    name: Salt compare against
+    icon: mdi:compare
+    initial: Previous period
+    options: [Previous period, Two periods ago, Same period last year]

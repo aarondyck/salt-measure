@@ -1,0 +1,95 @@
+- id: '1792000000011'
+  alias: Salt Level Alerts
+  description: One warning below 50% and one critical alert below 25% per refill cycle,
+    never two salt notifications within 24 hours. Requires 3h sensor uptime. Resets
+    when the level goes back above 60%.
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.salt_softener_level
+    below: 50
+    for:
+      minutes: 30
+    id: check
+  - trigger: numeric_state
+    entity_id: sensor.salt_softener_level
+    below: 25
+    for:
+      minutes: 30
+    id: check
+  - trigger: numeric_state
+    entity_id: sensor.salt_level_sensor_salt_level_sensor_uptime
+    above: 10800
+    id: check
+  - trigger: time
+    at: 09:00:00
+    id: check
+  - trigger: numeric_state
+    entity_id: sensor.salt_softener_level
+    above: 60
+    for:
+      minutes: 30
+    id: refilled
+  variables:
+    level: '{{ states(''sensor.salt_softener_level'') | float(-1)
+      }}'
+    stage: '{{ states(''input_select.salt_alert_level'') }}'
+    quiet_period_over: '{{ now() - states.input_select.salt_alert_level.last_changed
+      > timedelta(hours=24) }}'
+    sensor_settled: '{{ states(''sensor.salt_level_sensor_salt_level_sensor_uptime'')
+      | float(0) > 10800 }}'
+  conditions:
+  - condition: template
+    value_template: '{{ level >= 0 }}'
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: refilled
+      - condition: template
+        value_template: '{{ stage != ''ok'' }}'
+      sequence:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.salt_alert_level
+        data:
+          option: ok
+    - conditions:
+      - condition: trigger
+        id: check
+      - condition: template
+        value_template: '{{ sensor_settled and quiet_period_over and level < 25 and
+          stage != ''critical'' }}'
+      sequence:
+      - action: notify.mobile_app_YOUR_PHONE
+        data:
+          title: '🚨 URGENT: Salt Critically Low!'
+          message: The salt level is critically low at {{ level | round(0) }}%. You
+            need to refill the tank.
+          data:
+            tag: salt_level_alert
+            priority: high
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.salt_alert_level
+        data:
+          option: critical
+    - conditions:
+      - condition: trigger
+        id: check
+      - condition: template
+        value_template: '{{ sensor_settled and quiet_period_over and level < 50 and
+          stage == ''ok'' }}'
+      sequence:
+      - action: notify.mobile_app_YOUR_PHONE
+        data:
+          title: '🧂 Salt Alert: Getting Low!'
+          message: The salt level in the tank has dropped below 50% ({{ level | round(0)
+            }}%). Time to check the supply.
+          data:
+            tag: salt_level_alert
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.salt_alert_level
+        data:
+          option: low
+  mode: queued

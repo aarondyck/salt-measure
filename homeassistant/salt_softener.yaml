@@ -1,0 +1,122 @@
+# Water softener salt tank: level, mass, daily consumption and days remaining.
+# Geometry: sensor distance of 85.3 cm = empty (highest stable reading of the empty tank in
+# Sep 2026); 17.0 cm = full tank (160 kg). Readings farther than the empty floor are discarded
+# (lid removed or regeneration spike). Refine empty_cm / full_cm / full_kg here as better data arrives.
+- trigger:
+    - trigger: state
+      entity_id: sensor.salt_level_sensor_salt_tank_distance_raw
+  condition:
+    - condition: template
+      value_template: >
+        {% set d = states('sensor.salt_level_sensor_salt_tank_distance_raw') | float(none) %}
+        {{ d is not none and d * 100 <= 85.3 }}
+  variables:
+    empty_cm: 85.3
+    full_cm: 17.0
+    full_kg: 160
+    dist_cm: "{{ (states('sensor.salt_level_sensor_salt_tank_distance_raw') | float * 100) | round(1) }}"
+    frac: "{{ [[(empty_cm - dist_cm) / (empty_cm - full_cm), 0] | max, 1] | min }}"
+  sensor:
+    - name: Salt Softener Distance
+      unique_id: salt_softener_distance
+      unit_of_measurement: cm
+      state_class: measurement
+      state: "{{ dist_cm }}"
+      attributes:
+        read_at: "{{ now().isoformat() }}"
+    - name: Salt Softener Level
+      unique_id: salt_softener_level
+      unit_of_measurement: "%"
+      state_class: measurement
+      state: "{{ (frac * 100) | round(1) }}"
+      attributes:
+        read_at: "{{ now().isoformat() }}"
+    - name: Salt Softener Mass
+      unique_id: salt_softener_mass
+      unit_of_measurement: kg
+      device_class: weight
+      state_class: measurement
+      state: "{{ (frac * full_kg) | round(1) }}"
+      attributes:
+        read_at: "{{ now().isoformat() }}"
+
+# Once a day after the regeneration, compare the settled level with yesterday's. A rise in
+# distance of 0-8 cm over exactly one day is that day's regeneration drop; anything else
+# (refill, lid off, gap in data) is skipped. History is kept in this sensor's attributes.
+# Seeded with the Oct 3-21 2026 drops measured from stable before/after plateaus.
+- trigger:
+    - trigger: time
+      at: "23:55:00"
+    - trigger: event
+      event_type: salt_softener_snapshot
+    - trigger: homeassistant
+      event: start
+  condition:
+    - condition: template
+      value_template: "{{ trigger.platform == 'homeassistant' or (trigger.platform == 'event' and trigger.event.data.get('seed')) or states('sensor.salt_softener_settled_distance') | is_number }}"
+  variables:
+    a: "{{ this.attributes if this is defined and this is not none else {} }}"
+    seed: [1.28, 0.47, 3.73, 2.06, 2.1, 3.21, 1.67, 1.7, 3.79, 2.24, 2.73, 2.5, 2.57, 1.29, 2.78, 2.55, 2.68]
+    cur: "{{ states('sensor.salt_softener_settled_distance') | float(none) }}"
+    today: "{{ now().date().isoformat() }}"
+    old_drops: "{{ a.get('drops', seed) }}"
+    old_dist: "{{ a.get('last_distance_cm', none) }}"
+    old_date: "{{ a.get('last_date', '') }}"
+    gap: >
+      {{ (strptime(today, '%Y-%m-%d') - strptime(old_date, '%Y-%m-%d')).days if old_date else 0 }}
+    drop: "{{ (cur - old_dist) if cur is number and old_dist is number else none }}"
+    keep: "{{ drop is number and gap == 1 and 0 <= drop <= 8 }}"
+    drops: "{{ (old_drops + [drop | round(2)])[-30:] if keep else old_drops }}"
+  sensor:
+    - name: Salt Softener Daily Drop
+      unique_id: salt_softener_daily_drop
+      unit_of_measurement: cm
+      state: "{{ ((drops[-14:] | sum) / (drops[-14:] | length)) | round(2) }}"
+      attributes:
+        drops: "{{ drops }}"
+        days_averaged: "{{ drops[-14:] | length }}"
+        last_distance_cm: "{{ cur if cur is number else old_dist }}"
+        last_date: "{{ today if cur is number else old_date }}"
+        last_drop_cm: "{{ drop if keep else none }}"
+    # Running total of salt used, for weekly/monthly usage charts (statistics 'change').
+    # Self-contained: tracks its own previous reading and only counts at the 23:55 run,
+    # using the same 0-8 cm one-day rule as the daily drop above. The first 23:55 run only
+    # sets the baseline. Pre-Nov-2026 history is imported as long-term statistics (sum ends at 0).
+    - name: Salt Softener Consumed
+      unique_id: salt_softener_consumed
+      unit_of_measurement: kg
+      state_class: total_increasing
+      state: >
+        {% set known = this is defined and this is not none %}
+        {% set total = this.state | float(0) if known else 0 %}
+        {% set pd = this.attributes.get('last_date', '') if known else '' %}
+        {% set pc = this.attributes.get('last_distance_cm') if known else none %}
+        {% set gap1 = pd != '' and (strptime(today, '%Y-%m-%d') - strptime(pd, '%Y-%m-%d')).days == 1 %}
+        {% set d = (cur - pc) if cur is number and pc is number else none %}
+        {% if trigger.platform == 'time' and gap1 and d is number and 0 <= d <= 8 %}
+          {{ (total + d * 160 / (85.3 - 17.0)) | round(2) }}
+        {% else %}
+          {{ total }}
+        {% endif %}
+      attributes:
+        last_date: >
+          {% set known = this is defined and this is not none %}
+          {{ today if trigger.platform == 'time' and cur is number else (this.attributes.get('last_date', '') if known else '') }}
+        last_distance_cm: >
+          {% set known = this is defined and this is not none %}
+          {{ cur if trigger.platform == 'time' and cur is number else (this.attributes.get('last_distance_cm') if known else none) }}
+
+- sensor:
+    - name: Salt Softener Daily Consumption
+      unique_id: salt_softener_daily_consumption
+      unit_of_measurement: kg
+      state: >
+        {% set d = states('sensor.salt_softener_daily_drop') | float(none) %}
+        {{ (d * 160 / (85.3 - 17.0)) | round(2) if d is not none else none }}
+    - name: Salt Softener Days Remaining
+      unique_id: salt_softener_days_remaining
+      unit_of_measurement: d
+      state: >
+        {% set kg = states('sensor.salt_softener_mass') | float(none) %}
+        {% set use = states('sensor.salt_softener_daily_consumption') | float(none) %}
+        {{ (kg / use) | round(1) if kg is not none and use else none }}
